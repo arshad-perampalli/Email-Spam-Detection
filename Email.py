@@ -16,7 +16,7 @@ st.write("Enter an email message below to check whether it is **Spam** or **Not 
 
 @st.cache_data
 def load_data():
-    df = pd.read_csv("spam.csv", encoding="latin-1")
+    df = pd.read_csv("https://drive.google.com/file/d/1Bd85h17-Xi3TVcxvZoduK8MbnKDIR73g/view?usp=sharing", encoding="latin-1")
     df = df[['v1', 'v2']]
     df.columns = ['label', 'message']
     df['label'] = df['label'].map({'ham': 0, 'spam': 1})
@@ -86,3 +86,4 @@ st.pyplot(fig)
 
 st.markdown("---")
 st.caption("Machine Learning Project | Email Spam Detection")
+
