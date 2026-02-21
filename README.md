@@ -2,6 +2,9 @@
 
 a simple Streamlit app that trains a TF-IDF + MultinomialNB classifier on the included SMS/Email spam dataset and provides a UI to test messages.
 
+[![Visit Site](https://email-spam-detection-urozhjdv2mmgw6vqyhv3pu.streamlit.app/)
+
+
 **Project Structure**
 - **Email.py**: Main Streamlit application and training script.
 - **spam.csv**: Dataset used to train and evaluate the model.
