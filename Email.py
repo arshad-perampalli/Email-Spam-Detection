@@ -1,12 +1,18 @@
 import streamlit as st
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
-from sklearn.metrics import accuracy_score, confusion_matrix
-import matplotlib.pyplot as plt
-import seaborn as sns
+from sklearn.metrics import (
+    accuracy_score,
+    confusion_matrix,
+    precision_score,
+    recall_score,
+    f1_score
+)
 
 
 st.set_page_config(page_title="Email Spam Detection", layout="centered")
@@ -16,7 +22,7 @@ st.write("Enter an email message below to check whether it is **Spam** or **Not 
 
 @st.cache_data
 def load_data():
-    df = pd.read_csv("https://drive.google.com/file/d/1Bd85h17-Xi3TVcxvZoduK8MbnKDIR73g/view?usp=sharing", encoding="latin-1")
+    df = pd.read_csv("spam.csv", encoding="latin-1")
     df = df[['v1', 'v2']]
     df.columns = ['label', 'message']
     df['label'] = df['label'].map({'ham': 0, 'spam': 1})
@@ -32,6 +38,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 
 vectorizer = TfidfVectorizer(stop_words='english', max_features=3000)
+
 X_train_vec = vectorizer.fit_transform(X_train)
 X_test_vec = vectorizer.transform(X_test)
 
@@ -40,7 +47,7 @@ model.fit(X_train_vec, y_train)
 
 y_pred = model.predict(X_test_vec)
 
-st.subheader("Check Your Email")
+st.subheader(" Check Your Email")
 
 user_input = st.text_area(
     "Enter Email Text",
@@ -56,15 +63,21 @@ if st.button("Check Spam"):
         prediction = model.predict(input_vec)[0]
 
         if prediction == 1:
-            st.error("This email is **SPAM**")
+            st.error(" This email is SPAM")
         else:
-            st.success("This email is **NOT SPAM**")
+            st.success(" This email is NOT SPAM")
 
+st.subheader(" Model Performance")
 
 accuracy = accuracy_score(y_test, y_pred)
+precision = precision_score(y_test, y_pred)
+recall = recall_score(y_test, y_pred)
+f1 = f1_score(y_test, y_pred)
 
-st.subheader("Model Performance")
 st.write(f"**Accuracy:** {accuracy * 100:.2f}%")
+st.write(f"**Precision:** {precision:.2f}")
+st.write(f"**Recall:** {recall:.2f}")
+st.write(f"**F1-Score:** {f1:.2f}")
 
 cm = confusion_matrix(y_test, y_pred)
 
@@ -78,6 +91,7 @@ sns.heatmap(
     yticklabels=["Not Spam", "Spam"],
     ax=ax
 )
+
 ax.set_xlabel("Predicted Label")
 ax.set_ylabel("True Label")
 ax.set_title("Confusion Matrix")
@@ -85,5 +99,4 @@ ax.set_title("Confusion Matrix")
 st.pyplot(fig)
 
 st.markdown("---")
-st.caption("Machine Learning Project | Email Spam Detection")
-
+st.caption("Machine Learning | Email Spam Detection")
